@@ -5,15 +5,18 @@ import android.os.Looper;
 
 import com.masker.easynet.EasyNet;
 import com.masker.easynet.callback.Callback;
+import com.masker.easynet.converter.Converter;
 import com.masker.easynet.exception.EasyNetException;
+import com.masker.easynet.response.Response;
 
 import java.io.IOException;
 import java.io.ObjectInput;
+import java.lang.reflect.Type;
 
 
 import okhttp3.Call;
-import okhttp3.Request;
-import okhttp3.Response;
+
+
 
 /**
  * Author: masker.
@@ -21,14 +24,19 @@ import okhttp3.Response;
  * Description : 封装Call，并且将执行的结果通过handler分发到主线程，交给自定义的Callback去处理
  */
 
-public class RequestCall {
+public class RequestCall<T> {
     private Call mCall;
     private Handler mHander;
+    private Type mType;
+    private Converter.Factory mConvertFactroy;
+    private Converter<okhttp3.Response,T> mConverter;
 
     private boolean isCalled = false;
 
-    public RequestCall(Call call){
+    public RequestCall(Call call,Converter.Factory converterFactory,Type type){
         mCall = call;
+        mConvertFactroy = converterFactory;
+        mConverter = (Converter<okhttp3.Response, T>) mConvertFactroy.createResponseConverter(type);
         mHander = new Handler(Looper.getMainLooper());
     }
 
@@ -53,33 +61,19 @@ public class RequestCall {
             }
 
             @Override
-            public void onResponse(final Call call, final Response response) throws IOException {
-                final Object o = callback.handleResponse(call,response);
+            public void onResponse(final Call call, final okhttp3.Response response) throws IOException {
+                T body = mConverter.convert(response);
+                final Response<T> res = new Response<T>();
+                res.data = body;
                 mHander.post(new Runnable() {
                     @Override
                     public void run() {
-                        callback.onSuccess(o);
+                        callback.onSuccess(res);
                     }
                 });
             }
         });
     }
 
-    /**
-     * 同步请求，不能再主线程被调用，会阻塞线程
-     * @return 请求的Response
-     */
-    public Response synExecute(){
-        if(isCalled == true){
-            throw new EasyNetException("The call has been called!");
-        }
-        isCalled = true;
-        Response result = null;
-        try {
-            result = mCall.execute();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return result;
-    }
+
 }

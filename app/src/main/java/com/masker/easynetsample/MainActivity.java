@@ -1,6 +1,5 @@
 package com.masker.easynetsample;
 
-import android.graphics.Bitmap;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,8 +7,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.masker.easynet.EasyNet;
-import com.masker.easynet.callback.BitmapCallback;
-import com.masker.easynet.callback.StringCallback;
+import com.masker.easynet.callback.Callback;
+import com.masker.easynet.converter.GsonConverterFactory;
+import com.masker.easynet.response.Response;
 
 import java.io.IOException;
 
@@ -27,11 +27,19 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         mTextView = (TextView) findViewById(R.id.text_view);
         mImageView = (ImageView) findViewById(R.id.image_view);
-        EasyNet.get("https://octodex.github.com/images/mcefeeline.jpg")
-                .execute(new BitmapCallback() {
+
+        EasyNet net = new EasyNet.Builder()
+                .setConverterFactory(GsonConverterFactory.create())
+                .build();
+        net.url("http://gank.io/api/data/Android/10/1")
+                .get()
+                .setType(Bean.class)
+                .build()
+                .execute(new Callback<Bean>(){
+
                     @Override
-                    public void onSuccess(Bitmap response) {
-                        mImageView.setImageBitmap(response);
+                    public void onSuccess(Response<Bean> response) {
+
                     }
 
                     @Override
