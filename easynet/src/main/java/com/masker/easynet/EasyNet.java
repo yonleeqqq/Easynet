@@ -152,7 +152,7 @@ public class EasyNet {
     private static class InitParams{
         OkHttpClient mOkHttpClient;
         Converter.Factory mConverterFactory;
-        public void apply(EasyNet easyNet){
+        void apply(EasyNet easyNet){
             //default params;
             if(mOkHttpClient == null){
                 mOkHttpClient = new OkHttpClient();

@@ -45,7 +45,7 @@ public class RequestCall<T> {
      * @param callback 回调方法，将会在主线程中得到执行
      */
     public void execute(final Callback callback){
-        if(isCalled == true){
+        if(isCalled){
             throw new EasyNetException("The call has been called!");
         }
         isCalled = true;
@@ -63,7 +63,7 @@ public class RequestCall<T> {
             @Override
             public void onResponse(final Call call, final okhttp3.Response response) throws IOException {
                 T body = mConverter.convert(response);
-                final Response<T> res = new Response<T>();
+                final Response<T> res = new Response<>();
                 res.data = body;
                 mHander.post(new Runnable() {
                     @Override
