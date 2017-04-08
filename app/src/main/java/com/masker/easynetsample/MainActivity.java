@@ -12,6 +12,7 @@ import com.masker.easynet.converter.GsonConverterFactory;
 import com.masker.easynet.response.Response;
 
 import java.io.IOException;
+import java.net.URL;
 
 import okhttp3.Call;
 
@@ -31,21 +32,18 @@ public class MainActivity extends AppCompatActivity {
         EasyNet net = new EasyNet.Builder()
                 .setConverterFactory(GsonConverterFactory.create())
                 .build();
-        net.url("http://gank.io/api/data/Android/10/1")
-                .get()
-                .setType(Bean.class)
-                .build()
-                .execute(new Callback<Bean>(){
+        net.get().url("http://gank.io/api/data/Android/10/1")
+                .build().execute(new Callback<Bean>(){
 
-                    @Override
-                    public void onSuccess(Response<Bean> response) {
+            @Override
+            public void onSuccess(Response<Bean> response) {
+                mTextView.setText(response.data.getResults().get(0).getDesc());
+            }
 
-                    }
+            @Override
+            public void onError(Call call, IOException e) {
 
-                    @Override
-                    public void onError(Call call, IOException e) {
-
-                    }
-                });
+            }
+        });
     }
 }

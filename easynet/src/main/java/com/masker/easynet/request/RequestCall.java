@@ -2,6 +2,7 @@ package com.masker.easynet.request;
 
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 
 import com.masker.easynet.EasyNet;
 import com.masker.easynet.callback.Callback;
@@ -11,6 +12,7 @@ import com.masker.easynet.response.Response;
 
 import java.io.IOException;
 import java.io.ObjectInput;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
 
@@ -25,18 +27,18 @@ import okhttp3.Call;
  */
 
 public class RequestCall<T> {
+    private static final String TAG = "RequestCall";
+
     private Call mCall;
     private Handler mHander;
-    private Type mType;
     private Converter.Factory mConvertFactroy;
     private Converter<okhttp3.Response,T> mConverter;
 
     private boolean isCalled = false;
 
-    public RequestCall(Call call,Converter.Factory converterFactory,Type type){
+    public RequestCall(Call call,Converter.Factory converterFactory){
         mCall = call;
         mConvertFactroy = converterFactory;
-        mConverter = (Converter<okhttp3.Response, T>) mConvertFactroy.createResponseConverter(type);
         mHander = new Handler(Looper.getMainLooper());
     }
 
@@ -44,7 +46,7 @@ public class RequestCall<T> {
      *  异步请求
      * @param callback 回调方法，将会在主线程中得到执行
      */
-    public void execute(final Callback callback){
+    public void execute(final Callback<T> callback){
         if(isCalled){
             throw new EasyNetException("The call has been called!");
         }
@@ -62,9 +64,13 @@ public class RequestCall<T> {
 
             @Override
             public void onResponse(final Call call, final okhttp3.Response response) throws IOException {
+                Type type = callback.getClass().getGenericSuperclass();
+                Type realType = ((ParameterizedType)type).getActualTypeArguments()[0];
+                mConverter = (Converter<okhttp3.Response, T>) mConvertFactroy.createResponseConverter(realType);
                 T body = mConverter.convert(response);
                 final Response<T> res = new Response<>();
                 res.data = body;
+                res.setHeaders(response.headers());
                 mHander.post(new Runnable() {
                     @Override
                     public void run() {
