@@ -36,7 +36,7 @@ public class RequestCall<T> {
 
     private boolean isCalled = false;
 
-    public RequestCall(Call call,Converter.Factory converterFactory){
+    RequestCall(Call call,Converter.Factory converterFactory){
         mCall = call;
         mConvertFactroy = converterFactory;
         mHander = new Handler(Looper.getMainLooper());

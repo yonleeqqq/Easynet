@@ -28,7 +28,7 @@ public abstract class RequestBuilder<T extends RequestBuilder> {
     protected Map<String,String> headers;
     protected Map<String,String> params;
 
-    public RequestBuilder(OkHttpClient client, Converter.Factory factory){
+     RequestBuilder(OkHttpClient client, Converter.Factory factory){
         mClient = client;
         mFactory = factory;
     }
