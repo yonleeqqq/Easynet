@@ -21,7 +21,7 @@ public class StringConvertFactory extends Converter.Factory{
     }
 
     @Override
-    public Converter<Response, String> createResponseConverter(Type type) {
+    public Converter<Response, String> createResponseConverter(Type type) throws ConvertException {
         if(type != String.class){
             throw new ConvertException("response type must be string");
         }

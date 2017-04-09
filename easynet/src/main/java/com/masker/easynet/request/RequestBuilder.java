@@ -7,6 +7,7 @@ import android.util.ArrayMap;
 import com.masker.easynet.converter.Converter;
 import com.masker.easynet.exception.EasyNetException;
 
+import java.util.List;
 import java.util.Map;
 
 import okhttp3.OkHttpClient;
@@ -20,16 +21,16 @@ import okhttp3.OkHttpClient;
 public abstract class RequestBuilder<T extends RequestBuilder> {
 
     protected OkHttpClient mClient;
-    protected Converter.Factory mFactory;
+    protected List<Converter.Factory> mFactories;
 
     protected String url;
     protected Object tag;
     protected Map<String,String> headers;
     protected Map<String,String> params;
 
-     RequestBuilder(OkHttpClient client, Converter.Factory factory){
+     RequestBuilder(OkHttpClient client, List<Converter.Factory> factories){
         mClient = client;
-        mFactory = factory;
+        mFactories = factories;
     }
 
     /*

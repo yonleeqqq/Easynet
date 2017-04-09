@@ -6,7 +6,7 @@ package com.masker.easynet.exception;
  * Description :convert exception
  */
 
-public class ConvertException extends RuntimeException{
+public class ConvertException extends Exception{
     private String msg;
 
     public ConvertException(String msg){

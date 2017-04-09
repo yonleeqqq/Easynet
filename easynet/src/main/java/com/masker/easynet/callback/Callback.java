@@ -10,12 +10,12 @@ import okhttp3.Call;
 /**
  * Author: masker.
  * Date: 2017/3/14.
- * Description : 回调的基类
+ * Description : base callback
  */
 
-public abstract class Callback<T> {
+public interface Callback<T> {
 
-    public abstract void onSuccess(Response<T> response);
-    public abstract void onError(Call call,IOException e);
+    void onSuccess(Response<T> response);
+    void onError(Call call,IOException e);
 
 }

@@ -6,6 +6,7 @@ import android.util.ArrayMap;
 import com.masker.easynet.converter.Converter;
 import com.masker.easynet.exception.EasyNetException;
 
+import java.util.List;
 import java.util.Map;
 
 import okhttp3.Call;
@@ -22,8 +23,8 @@ public class GetRequestBuilder extends RequestBuilder<GetRequestBuilder>
         implements WithParams{
 
 
-    public GetRequestBuilder(OkHttpClient client, Converter.Factory factory) {
-        super(client, factory);
+    public GetRequestBuilder(OkHttpClient client, List<Converter.Factory> factories) {
+        super(client, factories);
     }
 
     @Override
@@ -38,7 +39,7 @@ public class GetRequestBuilder extends RequestBuilder<GetRequestBuilder>
         }
         Request request = builder.tag(tag).build();
         Call call = mClient.newCall(request);
-        return new HttpCall(call, mFactory);
+        return new HttpCall(call, mFactories);
     }
 
     /*

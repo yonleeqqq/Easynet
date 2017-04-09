@@ -7,6 +7,10 @@ import com.masker.easynet.request.GetRequestBuilder;
 import com.masker.easynet.request.PostFormRequestBuilder;
 
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 import okhttp3.OkHttpClient;
 
 /**
@@ -31,11 +35,11 @@ public class EasyNet {
     }
 
     public GetRequestBuilder get(){
-        return new GetRequestBuilder(mParams.mOkHttpClient,mParams.mConverterFactory);
+        return new GetRequestBuilder(mParams.mOkHttpClient,mParams.mConverterFactories);
     }
 
     public PostFormRequestBuilder post(){
-        return new PostFormRequestBuilder(mParams.mOkHttpClient,mParams.mConverterFactory);
+        return new PostFormRequestBuilder(mParams.mOkHttpClient,mParams.mConverterFactories);
     }
 
     public static class Builder{
@@ -43,6 +47,9 @@ public class EasyNet {
 
         public Builder(){
             P = new InitParams();
+            //default converterfactory
+            P.mConverterFactories = new ArrayList<>();
+            P.mConverterFactories.add(StringConvertFactory.create());
         }
 
         public Builder setClient(OkHttpClient client){
@@ -50,8 +57,11 @@ public class EasyNet {
             return this;
         }
 
-        public Builder setConverterFactory(Converter.Factory factory){
-            P.mConverterFactory = factory;
+        public Builder addConverterFactory(Converter.Factory factory){
+            if(factory == null){
+                throw new RuntimeException("converterfactory == null");
+            }
+            P.mConverterFactories.add(factory);
             return this;
         }
 
@@ -64,14 +74,11 @@ public class EasyNet {
 
     private static class InitParams{
         OkHttpClient mOkHttpClient;
-        Converter.Factory mConverterFactory;
+        List<Converter.Factory> mConverterFactories;
         void apply(EasyNet easyNet){
             //default params;
             if(mOkHttpClient == null){
                 mOkHttpClient = new OkHttpClient();
-            }
-            if(mConverterFactory == null){
-                mConverterFactory = StringConvertFactory.create();
             }
             easyNet.setmParams(this);
         }

@@ -1,5 +1,6 @@
 package com.masker.easynetsample;
 
+import android.graphics.Bitmap;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,6 +9,7 @@ import android.widget.TextView;
 
 import com.masker.easynet.EasyNet;
 import com.masker.easynet.callback.Callback;
+import com.masker.easynet.converter.BitmapConverterFactory;
 import com.masker.easynet.converter.GsonConverterFactory;
 import com.masker.easynet.converter.StringConvertFactory;
 import com.masker.easynet.response.Response;
@@ -29,6 +31,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         mTextView = (TextView) findViewById(R.id.text_view);
         mImageView = (ImageView) findViewById(R.id.image_view);
+
+        
 
     }
 }

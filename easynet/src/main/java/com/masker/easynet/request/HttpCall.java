@@ -7,6 +7,8 @@ import android.util.Log;
 import com.masker.easynet.EasyNet;
 import com.masker.easynet.callback.Callback;
 import com.masker.easynet.converter.Converter;
+import com.masker.easynet.converter.GsonConverterFactory;
+import com.masker.easynet.exception.ConvertException;
 import com.masker.easynet.exception.EasyNetException;
 import com.masker.easynet.response.Response;
 
@@ -14,6 +16,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.List;
 
 
 import okhttp3.Call;
@@ -31,14 +34,14 @@ public class HttpCall<T> {
 
     private Call mCall;
     private Handler mHander;
-    private Converter.Factory mConvertFactroy;
+    private List<Converter.Factory> mFactories;
     private Converter<okhttp3.Response,T> mConverter;
 
     private boolean isCalled = false;
 
-    HttpCall(Call call, Converter.Factory converterFactory){
+    HttpCall(Call call, List<Converter.Factory> factories){
         mCall = call;
-        mConvertFactroy = converterFactory;
+        mFactories = factories;
         mHander = new Handler(Looper.getMainLooper());
     }
 
@@ -66,9 +69,22 @@ public class HttpCall<T> {
             public void onResponse(final Call call, final okhttp3.Response response) throws IOException {
                 Type type = callback.getClass().getGenericSuperclass();
                 Type realType = ((ParameterizedType)type).getActualTypeArguments()[0];
-                Log.i(TAG, "onResponse: "+realType);
-                mConverter = (Converter<okhttp3.Response, T>) mConvertFactroy.createResponseConverter(realType);
-                T body = mConverter.convert(response);
+                T body = null;
+                boolean finish = false;
+                int index = 0;
+                while(!finish){
+                    try {
+                        mConverter = (Converter<okhttp3.Response, T>) mFactories.get(index).createResponseConverter(realType);
+                        body = mConverter.convert(response);
+                        finish = true;
+                    } catch (ConvertException e) {
+                        index++;
+                        if(index == mFactories.size()){
+                            throw new EasyNetException("converte response failed!");
+                        }
+                    }
+                }
+
                 final Response<T> res = new Response<>();
                 res.data = body;
                 res.setHeaders(response.headers());
