@@ -29,6 +29,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         mTextView = (TextView) findViewById(R.id.text_view);
         mImageView = (ImageView) findViewById(R.id.image_view);
-        
+
     }
 }
