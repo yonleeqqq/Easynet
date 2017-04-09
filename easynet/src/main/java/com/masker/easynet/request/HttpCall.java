@@ -66,6 +66,7 @@ public class HttpCall<T> {
             public void onResponse(final Call call, final okhttp3.Response response) throws IOException {
                 Type type = callback.getClass().getGenericSuperclass();
                 Type realType = ((ParameterizedType)type).getActualTypeArguments()[0];
+                Log.i(TAG, "onResponse: "+realType);
                 mConverter = (Converter<okhttp3.Response, T>) mConvertFactroy.createResponseConverter(realType);
                 T body = mConverter.convert(response);
                 final Response<T> res = new Response<>();
