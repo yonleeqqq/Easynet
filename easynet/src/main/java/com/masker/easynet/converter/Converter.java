@@ -17,7 +17,6 @@ public interface  Converter<S,D> {
      D convert(S src) throws IOException;
      public abstract class Factory{
           public Converter<okhttp3.Response,?> createResponseConverter(Type type){
-
                return null;
           }
      }

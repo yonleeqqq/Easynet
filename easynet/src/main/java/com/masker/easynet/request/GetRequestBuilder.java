@@ -27,7 +27,7 @@ public class GetRequestBuilder extends RequestBuilder<GetRequestBuilder>
     }
 
     @Override
-    public RequestCall build() {
+    public HttpCall build() {
         Request.Builder builder = new Request.Builder();
         resetUrl();
         builder.url(url);
@@ -38,8 +38,7 @@ public class GetRequestBuilder extends RequestBuilder<GetRequestBuilder>
         }
         Request request = builder.tag(tag).build();
         Call call = mClient.newCall(request);
-        return new RequestCall(call, mFactory);
-
+        return new HttpCall(call, mFactory);
     }
 
     /*

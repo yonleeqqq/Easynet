@@ -9,6 +9,7 @@ import android.widget.TextView;
 import com.masker.easynet.EasyNet;
 import com.masker.easynet.callback.Callback;
 import com.masker.easynet.converter.GsonConverterFactory;
+import com.masker.easynet.converter.StringConvertFactory;
 import com.masker.easynet.response.Response;
 
 import java.io.IOException;
@@ -28,22 +29,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         mTextView = (TextView) findViewById(R.id.text_view);
         mImageView = (ImageView) findViewById(R.id.image_view);
-
-        EasyNet net = new EasyNet.Builder()
-                .setConverterFactory(GsonConverterFactory.create())
-                .build();
-        net.get().url("http://gank.io/api/data/Android/10/1")
-                .build().execute(new Callback<Bean>(){
-
-            @Override
-            public void onSuccess(Response<Bean> response) {
-                mTextView.setText(response.data.getResults().get(0).getDesc());
-            }
-
-            @Override
-            public void onError(Call call, IOException e) {
-
-            }
-        });
+        
     }
 }

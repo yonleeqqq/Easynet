@@ -23,11 +23,11 @@ import okhttp3.Call;
 /**
  * Author: masker.
  * Date: 2017/3/14.
- * Description : 封装Call，并且将执行的结果通过handler分发到主线程，交给自定义的Callback去处理
+ * Description : convert response and distribute it to main thread
  */
 
-public class RequestCall<T> {
-    private static final String TAG = "RequestCall";
+public class HttpCall<T> {
+    private static final String TAG = "HttpCall";
 
     private Call mCall;
     private Handler mHander;
@@ -36,15 +36,15 @@ public class RequestCall<T> {
 
     private boolean isCalled = false;
 
-    RequestCall(Call call,Converter.Factory converterFactory){
+    HttpCall(Call call, Converter.Factory converterFactory){
         mCall = call;
         mConvertFactroy = converterFactory;
         mHander = new Handler(Looper.getMainLooper());
     }
 
     /**
-     *  异步请求
-     * @param callback 回调方法，将会在主线程中得到执行
+     *  Async requst
+     * @param callback callback,runing on main thread
      */
     public void execute(final Callback<T> callback){
         if(isCalled){

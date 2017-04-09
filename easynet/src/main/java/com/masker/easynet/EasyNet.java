@@ -1,24 +1,13 @@
 package com.masker.easynet;
 
-import android.text.TextUtils;
-
 import com.masker.easynet.converter.Converter;
+import com.masker.easynet.converter.StringConvertFactory;
 import com.masker.easynet.exception.EasyNetException;
 import com.masker.easynet.request.GetRequestBuilder;
-import com.masker.easynet.request.RequestCall;
+import com.masker.easynet.request.PostFormRequestBuilder;
 
 
-import java.lang.reflect.Type;
-import java.net.URL;
-import java.util.Map;
-
-import okhttp3.Call;
-import okhttp3.Headers;
-import okhttp3.HttpUrl;
-import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
 
 /**
  * Author: masker.
@@ -43,6 +32,10 @@ public class EasyNet {
 
     public GetRequestBuilder get(){
         return new GetRequestBuilder(mParams.mOkHttpClient,mParams.mConverterFactory);
+    }
+
+    public PostFormRequestBuilder post(){
+        return new PostFormRequestBuilder(mParams.mOkHttpClient,mParams.mConverterFactory);
     }
 
     public static class Builder{
@@ -78,7 +71,7 @@ public class EasyNet {
                 mOkHttpClient = new OkHttpClient();
             }
             if(mConverterFactory == null){
-                throw new EasyNetException("converterfactory can't be null");
+                mConverterFactory = StringConvertFactory.create();
             }
             easyNet.setmParams(this);
         }

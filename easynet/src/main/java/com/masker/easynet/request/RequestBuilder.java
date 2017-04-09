@@ -7,7 +7,6 @@ import android.util.ArrayMap;
 import com.masker.easynet.converter.Converter;
 import com.masker.easynet.exception.EasyNetException;
 
-import java.lang.reflect.Type;
 import java.util.Map;
 
 import okhttp3.OkHttpClient;
@@ -88,6 +87,6 @@ public abstract class RequestBuilder<T extends RequestBuilder> {
     }
 
 
-    public abstract RequestCall build();
+    public abstract HttpCall build();
 
 }
