@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
+import com.masker.easynet.exception.ConvertException;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -49,10 +50,12 @@ public class GsonConverterFactory extends Converter.Factory{
             this.adapter = adapter;
         }
 
-        @Override public T convert(Response value) throws IOException {
+        @Override public T convert(Response value) throws ConvertException {
             JsonReader jsonReader = gson.newJsonReader(value.body().charStream());
             try {
                 return adapter.read(jsonReader);
+            } catch (IOException e) {
+                throw new ConvertException("gson convert exception");
             } finally {
                 value.close();
             }

@@ -30,6 +30,7 @@ public class GetRequestBuilder extends RequestBuilder<GetRequestBuilder>
     @Override
     public HttpCall build() {
         Request.Builder builder = new Request.Builder();
+        //handle params
         resetUrl();
         builder.url(url);
         if(headers != null){
@@ -37,7 +38,10 @@ public class GetRequestBuilder extends RequestBuilder<GetRequestBuilder>
                 builder.header(header.getKey(),header.getValue());
             }
         }
-        Request request = builder.tag(tag).build();
+        if(tag != null){
+            builder.tag(tag);
+        }
+        Request request = builder.build();
         Call call = mClient.newCall(request);
         return new HttpCall(call, mFactories);
     }

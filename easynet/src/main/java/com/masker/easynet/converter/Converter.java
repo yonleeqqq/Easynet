@@ -15,7 +15,7 @@ import java.lang.reflect.Type;
  */
 
 public interface  Converter<S,D> {
-     D convert(S src) throws IOException;
+     D convert(S src) throws ConvertException;
      public abstract class Factory{
           public Converter<okhttp3.Response,?> createResponseConverter(Type type) throws ConvertException {
                return null;

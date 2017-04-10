@@ -35,8 +35,13 @@ public class BitmapConverterFactory extends Converter.Factory {
     final class BitmapConverter implements Converter<Response,Bitmap>{
 
         @Override
-        public Bitmap convert(Response src) throws IOException {
-            return BitmapFactory.decodeStream(src.body().byteStream());
+        public Bitmap convert(Response src) throws ConvertException {
+            Bitmap result = null;
+            result = BitmapFactory.decodeStream(src.body().byteStream());
+            if(result == null){
+                throw new ConvertException("convert failed!");
+            }
+            return result;
         }
     }
 

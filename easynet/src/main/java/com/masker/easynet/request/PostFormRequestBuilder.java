@@ -31,13 +31,22 @@ public class PostFormRequestBuilder extends RequestBuilder<PostFormRequestBuilde
     @Override
     public HttpCall build() {
         Request.Builder builder = new Request.Builder();
+        builder.url(url);
         FormBody.Builder formBuilder = new FormBody.Builder();
         if(params != null){
             for (Map.Entry<String,String> param:params.entrySet()) {
                 formBuilder.add(param.getKey(), param.getValue());
             }
         }
-        Request request = builder.url(url).post(formBuilder.build()).tag(tag).build();
+        if(headers != null){
+            for (Map.Entry<String,String> header:headers.entrySet()){
+                builder.header(header.getKey(),header.getValue());
+            }
+        }
+        if(tag != null){
+            builder.tag(tag);
+        }
+        Request request = builder.post(formBuilder.build()).build();
         Call call = mClient.newCall(request);
         return new HttpCall(call,mFactories);
     }

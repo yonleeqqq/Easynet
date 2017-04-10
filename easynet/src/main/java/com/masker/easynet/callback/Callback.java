@@ -13,9 +13,9 @@ import okhttp3.Call;
  * Description : base callback
  */
 
-public interface Callback<T> {
+public abstract class Callback<T> {
 
-    void onSuccess(Response<T> response);
-    void onError(Call call,IOException e);
+    public abstract void onSuccess(Response<T> response);
+    public abstract void onError(Call call, IOException e);
 
 }

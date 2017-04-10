@@ -68,7 +68,11 @@ public class HttpCall<T> {
             @Override
             public void onResponse(final Call call, final okhttp3.Response response) throws IOException {
                 Type type = callback.getClass().getGenericSuperclass();
-                Type realType = ((ParameterizedType)type).getActualTypeArguments()[0];
+                Log.i(TAG, "onResponse: "+type);
+                Type realType = Object.class;
+                if(type instanceof ParameterizedType){
+                    realType = ((ParameterizedType)type).getActualTypeArguments()[0];
+                }
                 T body = null;
                 boolean finish = false;
                 int index = 0;
@@ -78,6 +82,7 @@ public class HttpCall<T> {
                         body = mConverter.convert(response);
                         finish = true;
                     } catch (ConvertException e) {
+                        Log.i(TAG, "onResponse: "+"convert failed");
                         index++;
                         if(index == mFactories.size()){
                             throw new EasyNetException("converte response failed!");
@@ -98,5 +103,13 @@ public class HttpCall<T> {
         });
     }
 
+    /*
+     * cancel the call
+     */
+    public void cancel(){
+        if(!mCall.isCanceled()){
+            mCall.cancel();
+        }
+    }
 
 }

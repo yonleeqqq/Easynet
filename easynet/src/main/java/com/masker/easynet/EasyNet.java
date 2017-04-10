@@ -5,12 +5,14 @@ import com.masker.easynet.converter.StringConvertFactory;
 import com.masker.easynet.exception.EasyNetException;
 import com.masker.easynet.request.GetRequestBuilder;
 import com.masker.easynet.request.PostFormRequestBuilder;
+import com.masker.easynet.request.PostStringRequestBuilder;
 
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 
 /**
@@ -42,6 +44,21 @@ public class EasyNet {
         return new PostFormRequestBuilder(mParams.mOkHttpClient,mParams.mConverterFactories);
     }
 
+    /*
+    * post a string,default mediatype text/plain
+     */
+    public PostStringRequestBuilder post(String content){
+        MediaType type = MediaType.parse("text/plain; charset=utf-8");
+        return new PostStringRequestBuilder(mParams.mOkHttpClient,mParams.mConverterFactories,
+                type,content);
+    }
+
+    public PostStringRequestBuilder post(String content,MediaType mediaType){
+        return new PostStringRequestBuilder(mParams.mOkHttpClient,mParams.mConverterFactories,
+                mediaType,content);
+    }
+
+
     public static class Builder{
         private InitParams P;
 
@@ -59,7 +76,7 @@ public class EasyNet {
 
         public Builder addConverterFactory(Converter.Factory factory){
             if(factory == null){
-                throw new RuntimeException("converterfactory == null");
+                throw new IllegalArgumentException("factory == null");
             }
             P.mConverterFactories.add(factory);
             return this;
@@ -83,5 +100,4 @@ public class EasyNet {
             easyNet.setmParams(this);
         }
     }
-
 }
