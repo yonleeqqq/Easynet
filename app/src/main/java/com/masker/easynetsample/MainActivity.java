@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.QuickContactBadge;
 import android.widget.TextView;
 
 import com.masker.easynet.EasyNet;
@@ -20,6 +21,7 @@ import java.io.IOException;
 import java.net.URL;
 
 import okhttp3.Call;
+import okhttp3.OkHttpClient;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -37,39 +39,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         initView();
 
-        final EasyNet net = new EasyNet.Builder()
-                .addConverterFactory(BitmapConverterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create())
+        EasyNet net = new EasyNet.Builder()
+                //.setClient(new OkHttpClient())
+                .addConverterFactory(BitmapConverterFactory.create()) //添加图片解析
+                .addConverterFactory(GsonConverterFactory.create()) //添加实体类解析
                 .build();
-
-        btnGet.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String url = "http://api.nohttp.net/upload";
-            }
-        });
-
-        btnPostString.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String url = "http://api.nohttp.net/postBody";
-                net.post("this is a string")
-                        .url(url)
-                        .build()
-                        .execute(new Callback<String>(){
-                            @Override
-                            public void onSuccess(Response<String> response) {
-                                tvResult.setText(response.data);
-                            }
-
-                            @Override
-                            public void onError(Call call, IOException e) {
-
-                            }
-                        });
-
-            }
-        });
+        
 
     }
 

@@ -67,8 +67,8 @@ public class HttpCall<T> {
 
             @Override
             public void onResponse(final Call call, final okhttp3.Response response) throws IOException {
+                Log.i(TAG, "onResponse: "+response.code());
                 Type type = callback.getClass().getGenericSuperclass();
-                Log.i(TAG, "onResponse: "+type);
                 Type realType = Object.class;
                 if(type instanceof ParameterizedType){
                     realType = ((ParameterizedType)type).getActualTypeArguments()[0];
