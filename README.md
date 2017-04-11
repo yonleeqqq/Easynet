@@ -106,7 +106,7 @@ net.post(content).url(url)
 ```
 
 ## TO DO
-- [] 文件上传下载以及进度监听
-- [] cookie session处理
-- [] 仿Retrofit使用接口和注解构建请求
-- [] ........
+- [ ] 文件上传下载以及进度监听
+- [ ] cookie session处理
+- [ ] 仿Retrofit使用接口和注解构建请求
+- [ ] ........
