@@ -67,29 +67,14 @@ public class HttpCall<T> {
 
             @Override
             public void onResponse(final Call call, final okhttp3.Response response) throws IOException {
-                Log.i(TAG, "onResponse: "+response.code());
-                Type type = callback.getClass().getGenericSuperclass();
-                Type realType = Object.class;
-                if(type instanceof ParameterizedType){
-                    realType = ((ParameterizedType)type).getActualTypeArguments()[0];
-                }
                 T body = null;
-                boolean finish = false;
-                int index = 0;
-                while(!finish){
-                    try {
-                        mConverter = (Converter<okhttp3.Response, T>) mFactories.get(index).createResponseConverter(realType);
-                        body = mConverter.convert(response);
-                        finish = true;
-                    } catch (ConvertException e) {
-                        Log.i(TAG, "onResponse: "+"convert failed");
-                        index++;
-                        if(index == mFactories.size()){
-                            throw new EasyNetException("converte response failed!");
-                        }
-                    }
+                if(callback.isHandleResponse()){
+                    Log.i(TAG, "onResponse: "+"handle Response");
+                    body = callback.handleResponse(response);
                 }
-
+                else{
+                    body = handleResponse(callback,response);
+                }
                 final Response<T> res = new Response<>();
                 res.data = body;
                 res.setHeaders(response.headers());
@@ -112,4 +97,28 @@ public class HttpCall<T> {
         }
     }
 
+    public T handleResponse(Callback<T> callback, okhttp3.Response response){
+        T body = null;
+        Type type = callback.getClass().getGenericSuperclass();
+        Type realType = Object.class;
+        if(type instanceof ParameterizedType){
+            realType = ((ParameterizedType)type).getActualTypeArguments()[0];
+        }
+        boolean finish = false;
+        int index = 0;
+        while(!finish){
+            try {
+                mConverter = (Converter<okhttp3.Response, T>) mFactories.get(index).createResponseConverter(realType);
+                body = mConverter.convert(response);
+                finish = true;
+            } catch (ConvertException e) {
+                Log.i(TAG, "onResponse: "+"convert failed");
+                index++;
+                if(index == mFactories.size()){
+                    throw new EasyNetException("converte response failed!");
+                }
+            }
+        }
+        return body;
+    }
 }

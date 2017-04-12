@@ -15,7 +15,19 @@ import okhttp3.Call;
 
 public abstract class Callback<T> {
 
+    protected boolean handleResponse = false;
+
     public abstract void onSuccess(Response<T> response);
     public abstract void onError(Call call, IOException e);
 
+    /*
+    * running on io thread
+     */
+    public T handleResponse(okhttp3.Response response){
+        return null;
+    }
+
+    public boolean isHandleResponse(){
+        return handleResponse;
+    }
 }
