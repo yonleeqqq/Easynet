@@ -4,10 +4,12 @@ import com.masker.easynet.converter.Converter;
 import com.masker.easynet.converter.StringConvertFactory;
 import com.masker.easynet.exception.EasyNetException;
 import com.masker.easynet.request.GetRequestBuilder;
+import com.masker.easynet.request.PostFileRequestBuilder;
 import com.masker.easynet.request.PostFormRequestBuilder;
 import com.masker.easynet.request.PostStringRequestBuilder;
 
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +42,9 @@ public class EasyNet {
         return new GetRequestBuilder(mParams.mOkHttpClient,mParams.mConverterFactories);
     }
 
+    /*
+     * post form
+     */
     public PostFormRequestBuilder post(){
         return new PostFormRequestBuilder(mParams.mOkHttpClient,mParams.mConverterFactories);
     }
@@ -58,6 +63,12 @@ public class EasyNet {
                 mediaType,content);
     }
 
+    /*
+     * upload files
+     */
+    public PostFileRequestBuilder upload(){
+        return new PostFileRequestBuilder(mParams.mOkHttpClient,mParams.mConverterFactories);
+    }
 
     public static class Builder{
         private InitParams P;

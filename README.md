@@ -1,7 +1,19 @@
-## 初始化
-这里参考Retrofit使用ConverterFactory动态生成converter，可以添加多个ConverterFactory,内部会逐个尝试，若最后
-解析失败会抛出异常，内部已经定义了StringConverterFactory、BitmapConverterFactory以及GsonConverterFactory,
+## 简介
+这是一个Android平台的异步网络请求工具，底层网络请求基于OkHttp.封装了请求的构建以及结果的解析
+参考Retrofit使用ConverterFactory动态生成converter，可以添加多个ConverterFactory,内部会逐个尝试，
+若最后解析失败会回调onError方法，内部已经定义了StringConverterFactory、BitmapConverterFactory以及GsonConverterFactory,
 支持自定义ConverterFactory.
+
+目前支持的功能如下：
+* 一般的get、post请求
+* post提交表单、表单方式上传文件、post提交文本
+* bitmap的加载以及解析、一般文件的下载以及进度监听
+* 文件上传进度监听，进度监听回调方法运行在主线程
+* 响应内容的解析，默认解析为字符串，支持解析为实体对象
+* 线程切换，在回调方法中拿到结果可以直接更新UI
+
+## 初始化
+
 ```
 EasyNet net = new EasyNet.Builder()
                 //.setClient(new OkHttpClient())
@@ -104,9 +116,58 @@ net.post(content).url(url)
             }
         });
 ```
+## 文件下载
+```
+net.get().url(url)
+        .build()
+        .execute(new FileCallback(path) { //path为文件的路径
+            @Override
+            public void onUpdateProgress(long curLength, long totalLength) {
+                int progress = (int)(curLength*100L/totalLength);
+                progressBar.setProgress(progress);
+            }
+            
+            @Override
+            public void onSuccess(Response<File> response) {
+                
+            }
+
+            @Override
+            public void onError(Call call, IOException e) {
+
+            }
+        });
+```
+## post表单上传文件
+```
+net.upload()
+    .url(uploadUrl)
+    .file(file,"music")//前面是要上传的文件，后面的表单中文件对应的name
+    .file(upFile,"apk")
+    .listener(new EasyRequestBody.UpLoadListener() {
+        @Override
+        public void onUpdateProgress(long curLength, long totalLength) {
+            int progress = (int)(curLength*100L/totalLength);
+            progressBar.setProgress(progress);
+            tvProgress.setText(" "+(curLength/1024)+"/"+(totalLength/1024)+"Kb");
+        }
+    })
+    .build()
+    .execute(new Callback<String>(){
+        @Override
+        public void onSuccess(Response<String> response) {
+            Log.i(TAG, "onSuccess: "+response.data);
+        }
+
+        @Override
+        public void onError(Call call, IOException e) {
+
+        }
+    });
+```
 
 ## TO DO
-- [ ] 文件上传下载以及进度监听
+- [x] 文件上传下载以及进度监听
 - [ ] cookie session处理
 - [ ] 仿Retrofit使用接口和注解构建请求
 - [ ] ........

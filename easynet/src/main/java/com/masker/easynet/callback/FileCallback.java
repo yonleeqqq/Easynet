@@ -35,23 +35,20 @@ public abstract class FileCallback extends Callback<File>{
     @Override
     public File handleResponse(okhttp3.Response response) {
         File file = new File(pathName);
-        if(file.exists()){
-            file.delete();
-        }
         try (InputStream is = response.body().byteStream();
              FileOutputStream fos = new FileOutputStream(file)){
             final long totalLength = response.body().contentLength();
             byte[] buffer = new byte[1024*10];
             long curLength = 0;
-            int len= 0;
-            while((len = is.read(buffer)) > 0){
+            int len;
+            while((len = is.read(buffer)) != -1){
                 fos.write(buffer,0,len);
                 curLength += len;
                 final long finalCurLength = curLength;
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        onUpdateProgress(totalLength, finalCurLength);
+                        onUpdateProgress(finalCurLength,totalLength);
                     }
                 });
             }
@@ -66,5 +63,5 @@ public abstract class FileCallback extends Callback<File>{
     /*
     * running on ui thread
      */
-    public abstract void onUpdateProgress(long totalLength,long curLength);
+    public abstract void onUpdateProgress(long curLength,long totalLength);
 }
