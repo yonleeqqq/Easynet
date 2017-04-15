@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-
+apply plugin: 'com.novoda.bintray-release'
 
 android {
     compileSdkVersion 24
@@ -20,6 +20,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    lintOptions{
+        abortOnError false
+        warning 'InvalidPackage'
+    }
 }
 
 dependencies {
@@ -27,4 +31,13 @@ dependencies {
     compile 'com.squareup.okhttp3:okhttp:3.6.0'
     compile 'com.google.code.gson:gson:2.8.0'
     testCompile 'junit:junit:4.12'
+}
+
+publish {
+    userOrg = 'sgy'//bintray.com user
+    groupId = 'com.sgy'//jcenter path
+    artifactId = 'EasyNet'//project name
+    publishVersion = '0.1.0'//version
+    desc = 'An Async Network tools for Android,based on okhhtp'
+    website = 'https://github.com/shiguangyin/Easynet'
 }

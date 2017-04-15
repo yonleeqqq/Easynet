@@ -69,12 +69,21 @@ public class HttpCall<T> {
             public void onResponse(final Call call, final okhttp3.Response response) throws IOException {
                 T body = null;
                 if(callback.isHandleResponse()){
-                    Log.i(TAG, "onResponse: "+"handle Response");
                     body = callback.handleResponse(response);
                 }
                 else{
                     body = handleResponse(callback,response);
                 }
+                if(body == null){
+                    mHander.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            callback.onError(call,new IOException("convert error"));
+                        }
+                    });
+                    return;
+                }
+
                 final Response<T> res = new Response<>();
                 res.data = body;
                 res.setHeaders(response.headers());
@@ -112,10 +121,9 @@ public class HttpCall<T> {
                 body = mConverter.convert(response);
                 finish = true;
             } catch (ConvertException e) {
-                Log.i(TAG, "onResponse: "+"convert failed");
                 index++;
                 if(index == mFactories.size()){
-                    throw new EasyNetException("converte response failed!");
+                    return null;
                 }
             }
         }
