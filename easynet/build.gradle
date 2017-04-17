@@ -37,7 +37,7 @@ publish {
     userOrg = 'sgy'//bintray.com user
     groupId = 'com.sgy'//jcenter path
     artifactId = 'EasyNet'//project name
-    publishVersion = '0.1.0'//version
-    desc = 'An Async Network tools for Android,based on okhhtp'
+    publishVersion = '0.1.1'//version
+    desc = 'An async network tools for Android,based on okhhtp'
     website = 'https://github.com/shiguangyin/Easynet'
 }

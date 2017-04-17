@@ -25,7 +25,11 @@ import okhttp3.OkHttpClient;
 
 public class EasyNet {
 
+    private static OkHttpClient deafultClient;
 
+    public static void setDeafultClient(OkHttpClient client){
+        deafultClient = client;
+    }
 
     private InitParams mParams;
 
@@ -106,7 +110,12 @@ public class EasyNet {
         void apply(EasyNet easyNet){
             //default params;
             if(mOkHttpClient == null){
-                mOkHttpClient = new OkHttpClient();
+                if(deafultClient == null){
+                    mOkHttpClient = new OkHttpClient();
+                }
+                else{
+                    mOkHttpClient = deafultClient;
+                }
             }
             easyNet.setmParams(this);
         }
